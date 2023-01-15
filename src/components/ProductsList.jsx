@@ -17,8 +17,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSearchParams } from 'react-router-dom';
 import { selectProducts, selectPages } from '../modules/products/selectors';
 import {
-  fetchProducts, getProductById, getPages,
-} from '../modules/products/action';
+  fetchProducts,
+  getProductById,
+  getPages,
+  changeModalState,
+} from '../modules/products/actions';
+import Modal from './Modal';
 
 function ProductsList() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -29,6 +33,11 @@ function ProductsList() {
   const dispatch = useDispatch();
   const products = useSelector(selectProducts);
   const totalPages = useSelector(selectPages);
+  const [curretItem, setCurrentItem] = useState({});
+
+  const openModal = () => {
+    dispatch(changeModalState(true));
+  };
 
   const searchFunction = (e) => {
     const newSearch = e.target.value;
@@ -52,7 +61,7 @@ function ProductsList() {
   const changePage = (num) => {
     if (!query) {
       setPageNum(num);
-      dispatch(fetchProducts(pageNum));
+      dispatch(fetchProducts(num));
       setSearchParams({
         page: num,
       });
@@ -85,7 +94,7 @@ function ProductsList() {
           label="Search by id"
           variant="standard"
           defaultValue={searchId}
-          onChange={(e) => searchFunction(e)}
+          onChange={searchFunction}
         />
       </Box>
       <TableContainer>
@@ -104,9 +113,14 @@ function ProductsList() {
           <TableBody>
             {products.map((product) => (
               <TableRow
+                onClick={() => {
+                  setCurrentItem(product);
+                  openModal();
+                }}
                 key={product.id}
                 sx={{
                   backgroundColor: `${product.color}`,
+                  cursor: 'pointer',
                 }}
               >
                 <TableCell component="th" scope="row">
@@ -116,7 +130,6 @@ function ProductsList() {
                   align="left"
                 >
                   {product.name}
-
                 </TableCell>
                 <TableCell align="left">{product.year}</TableCell>
               </TableRow>
@@ -126,7 +139,7 @@ function ProductsList() {
       </TableContainer>
       <Stack spacing={2}>
         <Pagination
-          count={useSelector(selectPages)}
+          count={totalPages}
           page={+pageNum || 1}
           onChange={(_, num) => changePage(num)}
         />
@@ -143,6 +156,7 @@ function ProductsList() {
         pauseOnHover
         theme="colored"
       />
+      <Modal item={curretItem} />
     </div>
   );
 }

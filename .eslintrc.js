@@ -18,5 +18,6 @@ module.exports = {
   ],
   rules: {
     'default-param-last': 0,
+    'camelcase': 'off',
   },
 };
