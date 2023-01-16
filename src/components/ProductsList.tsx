@@ -23,6 +23,8 @@ import {
   changeModalState,
 } from '../modules/products/actions';
 import Modal from './Modal';
+import { Product } from '../types';
+
 
 function ProductsList() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -31,7 +33,7 @@ function ProductsList() {
   const [pageNum, setPageNum] = useState(page);
   const [searchId, setSearchId] = useState(query);
   const dispatch = useDispatch();
-  const products = useSelector(selectProducts);
+  const products = useSelector(selectProducts); 
   const totalPages = useSelector(selectPages);
   const [curretItem, setCurrentItem] = useState({});
 
@@ -39,17 +41,17 @@ function ProductsList() {
     dispatch(changeModalState(true));
   };
 
-  const searchFunction = (e) => {
-    const newSearch = e.target.value;
+  const searchFunction = (e:any) => {
+    const newSearch: string = e.target.value;
     if (newSearch === '') {
-      dispatch(fetchProducts(pageNum));
+      dispatch(fetchProducts(pageNum) as any);
       dispatch(getPages(totalPages));
       setSearchParams({
         page: pageNum || 1,
       });
     } else {
       dispatch(getPages(1));
-      dispatch(getProductById(+newSearch));
+      dispatch(getProductById(+newSearch) as any);
       setSearchId(newSearch);
       setSearchParams({
         page: 1,
@@ -58,10 +60,10 @@ function ProductsList() {
     }
   };
 
-  const changePage = (num) => {
+  const changePage = (num:any) => {
     if (!query) {
       setPageNum(num);
-      dispatch(fetchProducts(num));
+      dispatch(fetchProducts(num) as any);
       setSearchParams({
         page: num,
       });
@@ -71,10 +73,10 @@ function ProductsList() {
 
   useEffect(() => {
     if (query) {
-      dispatch(getProductById(+query));
+      dispatch(getProductById(+query) as any);
       dispatch(getPages(totalPages));
     } else {
-      dispatch(fetchProducts(pageNum));
+      dispatch(fetchProducts(pageNum) as any);
     }
   }, [query]);
 
@@ -111,7 +113,7 @@ function ProductsList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map((product) => (
+            {products.map((product:Product) => (
               <TableRow
                 onClick={() => {
                   setCurrentItem(product);
@@ -156,7 +158,7 @@ function ProductsList() {
         pauseOnHover
         theme="colored"
       />
-      <Modal item={curretItem} />
+      <Modal {...curretItem} />
     </div>
   );
 }

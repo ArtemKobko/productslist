@@ -5,7 +5,7 @@ import ProductsList from './components/ProductsList';
 function App() {
   return (
     <Routes>
-      <Route exact path="/" element={<ProductsList />} />
+      <Route  path="/" element={<ProductsList />} />
     </Routes>
   );
 }
