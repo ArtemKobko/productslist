@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import {
   TextField,
   Box,
@@ -23,47 +22,49 @@ import {
   changeModalState,
 } from '../modules/products/actions';
 import Modal from './Modal';
+import { Product } from '../types';
+import { useSelector, useDispatch } from '../hooks';
 
 function ProductsList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get('page');
   const query = searchParams.get('query');
-  const [pageNum, setPageNum] = useState(page);
+  const [paginationPage, setPaginationPage] = useState(page || '1');
   const [searchId, setSearchId] = useState(query);
   const dispatch = useDispatch();
   const products = useSelector(selectProducts);
   const totalPages = useSelector(selectPages);
-  const [curretItem, setCurrentItem] = useState({});
+  const [currentItem, setCurrentItem] = useState<Product | null>(null);
 
   const openModal = () => {
     dispatch(changeModalState(true));
   };
 
-  const searchFunction = (e) => {
-    const newSearch = e.target.value;
-    if (newSearch === '') {
-      dispatch(fetchProducts(pageNum));
+  const searchFunction = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (value === '') {
+      dispatch(fetchProducts(paginationPage));
       dispatch(getPages(totalPages));
       setSearchParams({
-        page: pageNum || 1,
+        page: paginationPage || '1',
       });
     } else {
       dispatch(getPages(1));
-      dispatch(getProductById(+newSearch));
-      setSearchId(newSearch);
+      dispatch(getProductById(+value));
+      setSearchId(value);
       setSearchParams({
-        page: 1,
-        query: newSearch,
+        page: '1',
+        query: value,
       });
     }
   };
 
-  const changePage = (num) => {
+  const changePage = (num: number) => {
     if (!query) {
-      setPageNum(num);
-      dispatch(fetchProducts(num));
+      setPaginationPage(String(num));
+      dispatch(fetchProducts(String(num)));
       setSearchParams({
-        page: num,
+        page: String(num),
       });
     }
     return true;
@@ -74,9 +75,9 @@ function ProductsList() {
       dispatch(getProductById(+query));
       dispatch(getPages(totalPages));
     } else {
-      dispatch(fetchProducts(pageNum));
+      dispatch(fetchProducts(paginationPage));
     }
-  }, [query]);
+  }, [dispatch, totalPages, query, paginationPage]);
 
   return (
     <div className="ProductsList">
@@ -111,7 +112,7 @@ function ProductsList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map((product) => (
+            {products.map((product: Product) => (
               <TableRow
                 onClick={() => {
                   setCurrentItem(product);
@@ -140,7 +141,7 @@ function ProductsList() {
       <Stack spacing={2}>
         <Pagination
           count={totalPages}
-          page={+pageNum || 1}
+          page={Number(paginationPage || '1')}
           onChange={(_, num) => changePage(num)}
         />
       </Stack>
@@ -156,7 +157,7 @@ function ProductsList() {
         pauseOnHover
         theme="colored"
       />
-      <Modal item={curretItem} />
+      {currentItem && <Modal {...currentItem} />}
     </div>
   );
 }

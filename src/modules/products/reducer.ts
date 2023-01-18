@@ -1,8 +1,10 @@
 import { GET_PRODUCTS, GET_TOTALPAGES, CHANGE_MODAL_STATE } from './constants';
+import { ProductsState } from '../../types';
+import { Actions } from './types';
 
-const initialState = { products: [], totalPages: 1, isModalActive: false };
+const initialState: ProductsState = { totalPages: 1, isModalActive: false, products: [] };
 
-function productsReducer(state = initialState, action) {
+function productsReducer(state = initialState, action: Actions): ProductsState {
   switch (action.type) {
     case GET_PRODUCTS:
       return {
