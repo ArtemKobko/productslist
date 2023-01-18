@@ -1,4 +1,5 @@
 {
+  "homepage": "https://artemkobko.github.io/productslist",
   "name": "products-list",
   "version": "0.1.0",
   "private": true,
@@ -31,10 +32,13 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "eslint": "eslint . --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -64,8 +68,9 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsx-a11y": "^6.6.1",
-    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react": "^7.32.1",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "gh-pages": "^4.0.0",
     "typescript": "^4.9.4"
   }
 }

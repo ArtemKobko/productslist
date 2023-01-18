@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Typography, Box, Modal } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { selectModalState } from '../modules/products/selectors';
 import { changeModalState } from '../modules/products/actions';
 import { Product } from '../types';
+import { useDispatch, useSelector } from '../hooks';
 
 const style = {
   position: 'absolute',
@@ -19,10 +18,9 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal(props:Partial<Product>) {
-  const {
-    name, id, color, year, pantone_value,
-  } = props;
+const BasicModal: React.FC<Product> = ({
+  name, id, color, year, pantone_value: pantoneValue,
+}) => {
   const isActive = useSelector(selectModalState);
   const dispatch = useDispatch();
   const close = () => dispatch(changeModalState(false));
@@ -47,19 +45,13 @@ export default function BasicModal(props:Partial<Product>) {
             ,  year:
             {year}
             ,  pantone_value:
-            {pantone_value }
+            {pantoneValue }
           </Typography>
         </Box>
       </Modal>
     </div>,
     document.getElementById('modal') as HTMLInputElement,
   );
-}
-BasicModal.propTypes = {
-  name: PropTypes.string,
-  id: PropTypes.number,
-  color: PropTypes.string,
-  year: PropTypes.number,
-  pantone_value: PropTypes.string,
-
 };
+
+export default BasicModal;
